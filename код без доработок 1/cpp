@@ -268,6 +268,7 @@ int main() {
             cout << "q. Выход из программы\n";
             cout << "Выберите действие: ";
             cin >> choice;
+            // Остальная часть кода остается без изменений
             switch (choice) {
             case 'a':
                 root = nullptr;
@@ -284,56 +285,98 @@ int main() {
                 cout << "Узел добавлен. Дерево построено.\n"; // Добавлено сообщение о построении дерева
                 break;
             case 'c':
-                // Здесь должен быть код для построения бинарного дерева поиска,
-                // но поскольку мы уже используем функцию insert для добавления узлов,
-                // этот шаг не требуется.
-                cout << "Бинарное дерево поиска уже построено.\n";
-                break;
-            case 'd':
-                cout << "Вывод данных в виде дерева:\n";
-                DFS(root);
-                break;
-            case 'e':
-                cout << "Вывод данных путем обхода дерева (корень-левое-правое):\n";
-                rootLeftRight(root);
-                break;
-            case 'f':
-                cout << "Введите дату рождения узла для удаления: ";
-                cin >> birthday;
-                root = deleteNode(root, birthday);
-                cout << "Узел удален.\n";
-                cout << "Вывод дерева после удаления:\n";
-                rootLeftRight(root); // Выводим дерево после удаления
-                break;
-            case 'g':
-                deleteAllNodes(root);
-                root = nullptr;
-                cout << "Все узлы удалены.\n";
-                break;
-            case 'h':
-                cout << "Введите дату рождения узла для изменения: ";
-                cin >> birthday;
-                cout << "Введите новую фамилию: ";
-                cin >> surname;
-                cout << "Введите новый город рождения: ";
-                cin >> city;
-                changeNode(root, birthday, surname, city);
-                cout << "Узел изменен.\n";
-                break;
-            case 'i':
-                cout << "Количество узлов: " << countNodes(root) << endl;
-                break;
-            case 'j':
-                cout << "Введите имя файла для сохранения данных: ";
-                cin >> filename;
-                file.open(filename); // Открытие файла здесь
-                if (file.is_open()) {
-                    rootLeftRightToFile(root, file);
-                    file.close();
-                    cout << "Данные сохранены в файл " << filename << ".\n";
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else if (!root->isTreeBuilt) {
+                    cout << "Дерево уже построено.\n";
                 }
                 else {
-                    cerr << "Не удалось открыть файл для записи.\n";
+                    // Здесь может быть логика построения дерева поиска, если она еще не реализована
+                    cout << "Дерево построено.\n";
+                }
+                break;
+            case 'd':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    cout << "Вывод данных в виде дерева:\n";
+                    DFS(root);
+                }
+                break;
+            case 'e':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    cout << "Вывод данных обходом дерева (корень-левое-правое):\n";
+                    rootLeftRight(root);
+                }
+                break;
+            case 'f':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    cout << "Введите дату рождения узла для удаления: ";
+                    cin >> birthday;
+                    root = deleteNode(root, birthday);
+                    cout << "Узел удален.\n";
+                    cout << "Вывод дерева после удаления:\n";
+                    rootLeftRight(root); // Выводим дерево после удаления
+                }
+                break;
+            case 'g':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    deleteAllNodes(root);
+                    root = nullptr;
+                    cout << "Все узлы удалены.\n";
+                }
+                break;
+            case 'h':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    cout << "Введите дату рождения узла для изменения: ";
+                    cin >> birthday;
+                    cout << "Введите новую фамилию: ";
+                    cin >> surname;
+                    cout << "Введите новый город рождения: ";
+                    cin >> city;
+                    changeNode(root, birthday, surname, city);
+                    cout << "Узел изменен.\n";
+                }
+                break;
+            case 'i':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    int nodeCount = countNodes(root);
+                    cout << "Количество узлов в дереве: " << nodeCount << endl;
+                }
+                break;
+            case 'j':
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    cout << "Введите имя файла для сохранения данных: ";
+                    cin >> filename;
+                    file.open(filename); // Открытие файла здесь
+                    if (file.is_open()) {
+                        rootLeftRightToFile(root, file);
+                        file.close();
+                        cout << "Данные сохранены в файл " << filename << ".\n";
+                    }
+                    else {
+                        cerr << "Не удалось открыть файл для записи.\n";
+                    }
                 }
                 break;
             case 'k':
@@ -359,14 +402,24 @@ int main() {
                 }
                 break;
             case 'm':
-                cout << "Введите фамилию для поиска однофамильцев: ";
-                cin >> surname;
-                cout << "Однофамильцы:\n";
-                findCousins(root, surname);
+                if (!root) {
+                    cout << "Для начала создайте узел.\n";
+                }
+                else {
+                    cout << "Введите фамилию для поиска однофамильцев: ";
+                    cin >> surname;
+                    cout << "Однофамильцы:\n";
+                    findCousins(root, surname);
+                }
                 break;
             case 'n':
-                cout << "Максимальное значение и количество узлов с этим значением:\n";
-                printMaxValueAndCount(root);
+                if (!root || !root->isTreeBuilt) {
+                    cout << "Ошибка: дерево поиска ещё не построено.\n";
+                }
+                else {
+                    cout << "Максимальное значение и количество узлов с этим значением:\n";
+                    printMaxValueAndCount(root);
+                }
                 break;
             case 'q':
                 cout << "Выход из программы.\n";
