@@ -74,34 +74,46 @@ void rootLeftRightToFile(Node* root, ofstream& file) {
     rootLeftRightToFile(root->right, file);
 }
 
-// Функция для удаления узла по дате рождения
-Node* deleteNode(Node* root, string birthday) {
-    if (root == nullptr || root->birthday != birthday) {
-        cout << "Узел с указанной датой рождения не найден.\n";
+// Функция для удаления узла по фамилии
+Node* deleteNodeBySurname(Node* root, const string& surname) {
+    bool isNodeDeleted = false; // Переменная для отслеживания удаления узла
+
+    if (root == nullptr) {
         return root; // Возвращаем исходное дерево без изменений
     }
 
-    if (root->left == nullptr) {
-        Node* temp = root->right;
-        delete root;
-        return temp;
+    if (root->surname == surname) {
+        // Удаляем узел
+        isNodeDeleted = true; // Устанавливаем флаг, что узел был удален
+        if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+
+        Node* temp = minValueNode(root->right);
+
+        root->surname = temp->surname;
+        root->birthday = temp->birthday;
+        root->city = temp->city;
+
+        root->right = deleteNodeBySurname(root->right, temp->surname);
     }
-    else if (root->right == nullptr) {
-        Node* temp = root->left;
-        delete root;
-        return temp;
+    else if (surname < root->surname) {
+        root->left = deleteNodeBySurname(root->left, surname);
     }
-
-    Node* temp = minValueNode(root->right);
-
-    root->birthday = temp->birthday;
-    root->surname = temp->surname;
-    root->city = temp->city;
-
-    root->right = deleteNode(root->right, temp->birthday);
+    else {
+        root->right = deleteNodeBySurname(root->right, surname);
+    }
 
     return root;
 }
+
 
 // Функция для подсчета всех узлов
 int countNodes(Node* root) {
@@ -256,7 +268,7 @@ int main() {
             cout << "c. Построить бинарное дерево поиска\n";
             cout << "d. Вывести данные в виде дерева\n";
             cout << "e. Вывести данные путем обхода дерева (корень-левое-правое)\n";
-            cout << "f. Удаление узла\n";
+            cout << "f. Удаление узла по фамилии\n";
             cout << "g. Удаление всех узлов\n";
             cout << "h. Изменение номера узла\n";
             cout << "i. Подсчет всех узлов\n";
@@ -314,17 +326,21 @@ int main() {
                     rootLeftRight(root);
                 }
                 break;
-            case 'f':
+            case 'f': // Кейс для удаления узла по фамилии
                 if (!root) {
                     cout << "Для начала создайте узел.\n";
                 }
                 else {
-                    cout << "Введите дату рождения узла для удаления: ";
-                    cin >> birthday;
-                    root = deleteNode(root, birthday);
-                    cout << "Узел удален.\n";
-                    cout << "Вывод дерева после удаления:\n";
-                    rootLeftRight(root); // Выводим дерево после удаления
+                    cout << "Введите фамилию узла для удаления: ";
+                    cin >> surname;
+                    Node* newRoot = deleteNodeBySurname(root, surname);
+                    if (newRoot != root) { // Проверяем, изменилось ли дерево
+                        root = newRoot;
+                        cout << "Узел с указанной фамилией удален.\n";
+                    }
+                    else {
+                        cout << "Узел с указанной фамилией не найден.\n";
+                    }
                 }
                 break;
             case 'g':
@@ -354,7 +370,7 @@ int main() {
                 break;
             case 'i':
                 if (!root) {
-                    cout << "Для начала создайте узел.\n";
+                    cout << "Узлов не обнаружено. Для начала создайте узел.\n";
                 }
                 else {
                     int nodeCount = countNodes(root);
